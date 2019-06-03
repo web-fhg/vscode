@@ -6,7 +6,7 @@
 }
 html, body, .wrapper {
     height: 100%;
-    min-width: 700px;
+    min-width: 850px;
 }
 
 /*头部标签*/
@@ -73,7 +73,7 @@ html, body, .wrapper {
     width: calc(100% - 200px);
     height: calc(100% - 70px);
     background-color: #eee;
-    min-width: 500px;
+    min-width: 650px;
 }
 
 /*右侧新增学生区域*/
@@ -188,4 +188,57 @@ form .btn {
 }
 .right-content .same{
     display: block;
+}
+/* 页脚 */
+.nav-page{
+    width: 24opx;
+    height: 40px;
+    /* border: 1px solid black; */
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    margin-left: -121px;
+    float: left;
+}
+.nav-page div{
+    width: 60px;
+    height: 40px;
+    /* border: 1px solid black; */
+    float: left;
+} 
+.nav-page .allpage{
+    width: 120px;
+    position: relative;
+    overflow: hidden;
+} 
+.nav-page span{
+    width: 60px;
+    height: 40px;
+    padding-left: 5px;
+    line-height: 40px;
+}
+.nav-page li{
+    width: 40px;
+    height: 30px;
+    float: left;
+    line-height: 30px;
+    text-align: center;
+    /* margin-left: 5px;
+    margin-right: 5px;   */
+}
+.nav-page ul{
+    width: 150px;
+    height: 30px; 
+    position: absolute;
+    left: 0px;
+    top: 5px;
+}
+.nav-page ul .act{
+    background-color: #62d5c8;
+}
+.nav-page li:hover{
+    color: #62d5c8;
+}
+.nav-page span:hover{
+    color: #62d5c8;
 }
