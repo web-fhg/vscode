@@ -5,6 +5,10 @@ var tbody = document.getElementsByTagName('tbody')[0];
 var dialog = document.getElementsByClassName('dialog')[0];
 var newDay = new Date;
 var nowYear = newDay.getFullYear();
+var ul = document.getElementsByClassName('pages')[0];
+//每一页的学生数量 最大值为15
+var students = 15;
+init();
 
 function bindEvent(){
     menuList.addEventListener('click',changeMenu,false);
@@ -13,7 +17,7 @@ function bindEvent(){
     //新增学生中的提交按钮绑定点击事件
     submitAdd.addEventListener('click',addStudent,false);
     //学生列表点击刷新绑定点击事件
-    studentList.addEventListener('click',studentListRefresh,false);
+    //studentList.addEventListener('click',studentListRefresh,false);
     //学生列表中的编辑按钮绑定点击事件
     tbody.addEventListener('click',editorfn,false);
     //点击mask退出编辑
@@ -24,6 +28,8 @@ function bindEvent(){
     editorBtn.addEventListener('click',editorSubmit,false);
     //删除
     tbody.addEventListener('click',deleteReset,false);
+    //分页切换
+    ul.addEventListener('click',changPage,false)
 }
 //导航条点击切换列表
 function changeMenu(e){
@@ -88,39 +94,16 @@ function addStudent(e){
     else if(result.status == 'success'){
         alert(result.msg);
         form.reset();
-        studentList.click();
+        init();
     } else {
         alert(result.msg);
     }
 }
 //学生列表点击刷新点击事件
-function studentListRefresh(){
-    var result = saveData('http://api.duyiedu.com/api/student/findAll', {appkey: 'fhgweb_1559459973074'});
-    //var abb = [].slice.call(result.date).length;
-    //[].slice.call(result.date).length;
-    // console.log(result.date);
-    // console.log(result.date[0]);
-    // console.log(result.date[0].sNo);
-    var bodytr = '';
-    for(var i=0;i<result.data.length;i++){
-
-        var tr = '<tr class = '+result.data[i].sNo+' > \
-        <td>'+result.data[i].sNo+'</td> \
-        <td>'+result.data[i].name+'</td> \
-        <td>'+(result.data[i].sex == 0 ? '男':(result.data[i].sex == 1 ? '女': '你猜'))+'</td> \
-        <td>'+result.data[i].email+'</td> \
-        <td>'+(nowYear - result.data[i].birth)+'</td> \
-        <td>'+result.data[i].phone+'</td> \
-        <td>'+result.data[i].address+'</td> \
-        <td> \
-            <button class="Lbtn btn" date-id = '+result.data[i].sNo+' >编辑</button> \
-            <button class="Rbtn btn" date-sno = '+result.data[i].sNo+'>删除</button> \
-        </td> \
-    </tr>'
-        bodytr += tr
-    }
-    tbody.innerHTML= bodytr;
-}
+// function studentListRefresh(){
+//     var result = checkNavPage(1);
+    
+// }
 //学生列表中的编辑按钮点击事件
 function editorfn(e){
     if(e.target.className !== "Lbtn btn"){
@@ -175,7 +158,7 @@ function editorSubmit(e){
         form.reset();
         outEditor();
         alert(result.msg);
-        studentList.click();
+        init();
     } else {
         alert(result.msg);
     }
@@ -186,7 +169,7 @@ function deleteReset(e){
         return false;
     }
     var sNo = e.target.getAttribute('date-sno');
-    console.log(sNo);
+    //console.log(sNo);
     var studentObj = {
         sNo : sNo,
         appkey : "fhgweb_1559459973074",
@@ -195,11 +178,79 @@ function deleteReset(e){
      if(result.status == 'success'){
         
         alert(result.msg);
-        studentList.click();
+        init();
     } else {
         alert(result.msg);
     }
 }
+//分页查询 以及信息填充
+function checkNavPage(nowpage){
+    var studentObj = {
+        appkey : "fhgweb_1559459973074",
+        page : nowpage,
+        size : students,
+    };
+    var result = saveData('http://api.duyiedu.com/api/student/findByPage', studentObj);
+    //console.log(result);
+    var bodytr = '';
+    for(var i=0;i<result.data.findByPage.length;i++){
+        var tr = '<tr class = '+result.data.findByPage[i].sNo+' > \
+        <td>'+result.data.findByPage[i].sNo+'</td> \
+        <td>'+result.data.findByPage[i].name+'</td> \
+        <td>'+(result.data.findByPage[i].sex == 0 ? '男':(result.data.findByPage[i].sex == 1 ? '女': '你猜'))+'</td> \
+        <td>'+result.data.findByPage[i].email+'</td> \
+        <td>'+(nowYear - result.data.findByPage[i].birth)+'</td> \
+        <td>'+result.data.findByPage[i].phone+'</td> \
+        <td>'+result.data.findByPage[i].address+'</td> \
+        <td> \
+            <button class="Lbtn btn" date-id = '+result.data.findByPage[i].sNo+' >编辑</button> \
+            <button class="Rbtn btn" date-sno = '+result.data.findByPage[i].sNo+'>删除</button> \
+        </td> \
+    </tr>'
+        bodytr += tr
+    }
+    tbody.innerHTML= bodytr;
+    return result;
+}
+//页码以及样式切换
+function changPage(e){
+    if(e.target.tagName !== 'LI' ){
+        return false;
+    }
+    //console.log(e.target);
+    //console.log(ul.offsetLeft);
+    var lis = ul.getElementsByTagName('li');
+    var text = e.target.innerHTML;
+    ul.style.left = ul.offsetLeft == 0 || ul.offsetLeft>0 ? (text== 1 || text== 2  ? ul.offsetLeft : (lis.length == 3 && text== 3?ul.offsetLeft:-(text-2) * 40 +'px')) : 
+    (ul.offsetLeft == -40*(lis.length-3) ? (text== lis.length - 1 || text== lis.length ? -40*(lis.length-3) +'px' : -(text-2) * 40 +'px' ):-(text-2) * 40 +'px');
+    //console.log(ul.offsetLeft);
+    for(var i= 0; i< lis.length;i++){
+        lis[i].classList = ' ';
+    }
+    e.target.classList = 'act';
+    
+    checkNavPage(text);
+}
+//页面初始化
+function init(){
+    var result = checkNavPage(1);
+    //console.log(result.data.cont);
+    var number = Math.ceil(result.data.cont / students);
+    //console.log(number);
+    ul.style.left = number <= 2 ? 20*(3-number) +'px' : 0;
+    ul.style.width = number * 40 +'px';
+    var uls = '';
+    for(var i= 1;i<= number;i++){
+        if(i==1){
+            var li = '<li class= "act">'+i+'</li>';
+        }else{
+        var li = '<li>'+i+'</li>';
+        };
+        uls += li;
+    }
+    ul.innerHTML= uls;
+}
+//navPage();
 
 // 向后端存储数据
 //url:http://api.duyiedu.com
