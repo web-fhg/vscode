@@ -205,6 +205,7 @@ form .btn {
     height: 40px;
     /* border: 1px solid black; */
     float: left;
+    cursor: pointer;
 } 
 .nav-page .allpage{
     width: 120px;
@@ -232,6 +233,7 @@ form .btn {
     position: absolute;
     left: 0px;
     top: 5px;
+    /* cursor: pointer; */
 }
 .nav-page ul .act{
     color: #62d5c8;

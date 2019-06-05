@@ -6,8 +6,8 @@ var dialog = document.getElementsByClassName('dialog')[0];
 var newDay = new Date;
 var nowYear = newDay.getFullYear();
 var ul = document.getElementsByClassName('pages')[0];
-//每一页的学生数量 最大值为15
-var students = 15;
+var lis = ul.getElementsByTagName('li');
+
 init();
 
 function bindEvent(){
@@ -30,6 +30,12 @@ function bindEvent(){
     tbody.addEventListener('click',deleteReset,false);
     //分页切换
     ul.addEventListener('click',changPage,false)
+    //上一页点击事件
+    var lastpages = document.getElementsByClassName('lastpage')[0];
+    lastpages.addEventListener('click',lastpage,false)
+    //
+    var nextpages = document.getElementsByClassName('nextpage')[0];
+    nextpages.addEventListener('click',nextpage,false)
 }
 //导航条点击切换列表
 function changeMenu(e){
@@ -219,16 +225,48 @@ function changPage(e){
     }
     //console.log(e.target);
     //console.log(ul.offsetLeft);
-    var lis = ul.getElementsByTagName('li');
     var text = e.target.innerHTML;
-    ul.style.left = ul.offsetLeft == 0 || ul.offsetLeft>0 ? (text== 1 || text== 2  ? ul.offsetLeft : (lis.length == 3 && text== 3?ul.offsetLeft:-(text-2) * 40 +'px')) : 
-    (ul.offsetLeft == -40*(lis.length-3) ? (text== lis.length - 1 || text== lis.length ? -40*(lis.length-3) +'px' : -(text-2) * 40 +'px' ):-(text-2) * 40 +'px');
+    pagemove(text);
     //console.log(ul.offsetLeft);
     for(var i= 0; i< lis.length;i++){
         lis[i].classList = ' ';
     }
     e.target.classList = 'act';
     
+    checkNavPage(text);
+}  
+//页码移动规则
+function pagemove(text){
+    ul.style.left = ul.offsetLeft == 0 || ul.offsetLeft>0 ? (text== 1 || text== 2  ? ul.offsetLeft : (lis.length == 3 && text== 3?ul.offsetLeft:-(text-2) * 40 +'px')) : 
+    (ul.offsetLeft == -40*(lis.length-3) ? (text== lis.length - 1 || text== lis.length ? -40*(lis.length-3) +'px' : -(text-2) * 40 +'px' ):-(text-2) * 40 +'px');
+}
+function lastpage() {
+    var liact = ul.getElementsByClassName('act')[0];
+    var text = liact.innerHTML - 1;
+    if(text < 1){
+        text = 1;
+    }
+    console.log(text);
+    pagemove(text);
+    for(var i= 0; i< lis.length;i++){
+        lis[i].classList = ' ';
+    }
+    lis[text-1].classList = 'act';
+    checkNavPage(text);
+}
+function nextpage() {
+    var liact = ul.getElementsByClassName('act')[0];
+    var text = (liact.innerHTML - 1) + 2;
+    console.log(text);
+    if(text > lis.length){
+        text = lis.length;
+    }
+    console.log(text);
+    pagemove(text);
+    for(var i= 0; i< lis.length;i++){
+        lis[i].classList = ' ';
+    }
+    lis[text-1].classList = 'act';
     checkNavPage(text);
 }
 //页面初始化
