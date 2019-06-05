@@ -194,7 +194,7 @@ function checkNavPage(nowpage){
     var studentObj = {
         appkey : "fhgweb_1559459973074",
         page : nowpage,
-        size : students,
+        size : studentspage,
     };
     var result = saveData('http://api.duyiedu.com/api/student/findByPage', studentObj);
     //console.log(result);
@@ -273,7 +273,7 @@ function nextpage() {
 function init(){
     var result = checkNavPage(1);
     //console.log(result.data.cont);
-    var number = Math.ceil(result.data.cont / students);
+    var number = Math.ceil(result.data.cont / studentspage);
     //console.log(number);
     ul.style.left = number <= 2 ? 20*(3-number) +'px' : 0;
     ul.style.width = number * 40 +'px';
@@ -324,4 +324,4 @@ function saveData(url, param) {
 }
 
 bindEvent();
-})()
+})(studentspage)
