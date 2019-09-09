@@ -8,6 +8,7 @@ var nowYear = newDay.getFullYear();
 var ul = document.getElementsByClassName('pages')[0];
 var lis = ul.getElementsByTagName('li');
 
+
 init();
 
 function bindEvent(){
